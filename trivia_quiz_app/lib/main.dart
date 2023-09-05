@@ -5,6 +5,7 @@ import 'package:trivia_quiz_app/screens/home_page.dart';
 import 'package:trivia_quiz_app/screens/quiz_page.dart';
 import 'package:trivia_quiz_app/screens/quizfinish_page.dart';
 
+//comment
 void main() {
   runApp(const MyApp());
 }
