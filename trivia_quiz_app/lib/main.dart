@@ -6,6 +6,7 @@ import 'package:trivia_quiz_app/screens/home_page.dart';
 // import 'package:trivia_quiz_app/resources/api_fetcher.dart';
 import 'package:trivia_quiz_app/screens/quizfinish_page.dart';
 
+
 void main() async {
   runApp(const MyApp());
 }
