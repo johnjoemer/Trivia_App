@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:trivia_quiz_app/main.dart';
+import 'package:trivia_quiz_app/resources/api_fetcher.dart';
 import 'package:trivia_quiz_app/screens/quiz_page.dart';
 
 void main() {
@@ -30,15 +32,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   String defaultURL = "https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple";
+  String name = "Gladywin"; //replace with the player's name
   
   void categoryNum(int num) {
     setState(() {
-      String categoryURL = defaultURL.replaceAllMapped(
+      baseUrl = defaultURL.replaceAllMapped(
             RegExp(r'category=\d+'),
             (match) => 'category=$num',
           );
-      print(categoryURL); //print to see if the category number changed
     });
+    print(baseUrl);
   }
 
   @override
@@ -52,6 +55,15 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
 
+            Text (
+              "Hi, $name!",
+              style: TextStyle(fontSize: 30),
+            ),
+
+            SizedBox(
+              height: 25,
+            ),
+
             //General Knowledge
             Container(
               width: double.infinity,
@@ -62,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                   categoryNum(9);
                   Navigator.push(
                     context, 
-                    MaterialPageRoute(builder: (context) => const QuizPage()),
+                    MaterialPageRoute(builder: (context) => const MyHomePage()),
                   );
                  },
                 style: ElevatedButton.styleFrom(
@@ -82,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                   categoryNum(27);
                   Navigator.push(
                     context, 
-                    MaterialPageRoute(builder: (context) => const QuizPage()),
+                    MaterialPageRoute(builder: (context) => const MyHomePage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -102,7 +114,7 @@ class _HomePageState extends State<HomePage> {
                   categoryNum(28);
                   Navigator.push(
                     context, 
-                    MaterialPageRoute(builder: (context) => const QuizPage()),
+                    MaterialPageRoute(builder: (context) => const MyHomePage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -122,7 +134,7 @@ class _HomePageState extends State<HomePage> {
                   categoryNum(18);
                   Navigator.push(
                     context, 
-                    MaterialPageRoute(builder: (context) => const QuizPage()),
+                    MaterialPageRoute(builder: (context) => const MyHomePage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -142,7 +154,7 @@ class _HomePageState extends State<HomePage> {
                   categoryNum(19);
                   Navigator.push(
                     context, 
-                    MaterialPageRoute(builder: (context) => const QuizPage()),
+                    MaterialPageRoute(builder: (context) => const MyHomePage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -151,7 +163,6 @@ class _HomePageState extends State<HomePage> {
                 child: const Text( 'Science: Mathematics' ),
               )
             )
-
           ],
         ),
       ),
