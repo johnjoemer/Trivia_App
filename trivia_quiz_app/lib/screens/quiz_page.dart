@@ -1,5 +1,7 @@
 // import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:trivia_quiz_app/screens/quizfinish_page.dart';
+// import 'package:trivia_quiz_app/resources/api_fetcher.dart';
 
 class QuizPage extends StatefulWidget {
   const QuizPage({super.key});
@@ -9,101 +11,77 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
+  List<Widget> widgets = [];
+  int index = 0;
 
   @override
   Widget build(BuildContext context){
+    
+    if(index < 10){
+      widgets.clear();
+      widgets.add(Text('Question Field $index'));
+      widgets.add(ElevatedButton(
+        onPressed: () {
+          
+        },
+        child: Text('Answer 1'),
+      ));
+      widgets.add(ElevatedButton(
+        onPressed: () {
+          
+        },
+        child: Text('Answer 2'),
+      ));
+      widgets.add(ElevatedButton(
+        onPressed: () {
+          
+        },
+        child: Text('Answer 3'),
+      ));
+      widgets.add(ElevatedButton(
+        onPressed: () {
+          
+        },
+        child: Text('Answer 4'),
+      ));
+      if(index < 9){
+        widgets.add(ElevatedButton(
+        onPressed: () {
+          setState(() {
+            index++;
+          });
+        },
+        child: Text('Next'),
+      ));
+      }
+      else if(index == 9){
+        widgets.add(ElevatedButton(
+          onPressed:() {
+            setState(() {
+              index = 0;
+            });
+            Navigator.push(
+              context, 
+              MaterialPageRoute(builder: (context) => const FinishPage()),
+            );
+          },
+          child: Text('Finish'),
+        ));
+      }
+    }
+    else{
+      throw Exception("Can't load page");
+    }
+    
+
     return Scaffold(
       appBar: AppBar(
       title: const Text('Quiz Category Here'),
       centerTitle: true,
     ),
-    body: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        
-        Container(
-        padding: const EdgeInsets.all(5),
-          child: Column(
-            children: [
-              const SizedBox(
-                width: 500,
-                height: 300,
-                child: Text("Quiz Question"),
-              ),
-
-              const SizedBox(height: 7),
-
-              SizedBox(
-                width: 500,
-                height: 70,
-                child: ElevatedButton(
-                  onPressed: (){
-                
-                  },
-                  child: const Text("Answer 1"),
-                ),
-              ),
-
-              const SizedBox(height: 7),
-
-              SizedBox(
-                width: 500,
-                height: 70,
-                child: ElevatedButton(
-                  onPressed: (){
-                
-                  },
-                  child: const Text("Answer 2"),
-                ),
-              ),
-
-               const SizedBox(height: 7),
-
-              SizedBox(
-                width: 500,
-                height: 70,
-                child: ElevatedButton(
-                  onPressed: (){
-                
-                  },
-                  child: const Text("Answer 3"),
-                ),
-              ),
-
-               const SizedBox(height: 7),
-
-              SizedBox(
-                width: 500,
-                height: 70,
-                child: ElevatedButton(
-                  onPressed: (){
-                
-                  },
-                  child: const Text("Answer 4"),
-                ),
-              ),
-
-              const SizedBox(height: 25),
-
-              SizedBox(
-                width: 100,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: (){
-                
-                  },
-                  child: const Text("Next"),
-                ),
-              ),
-
-
-            ],
-          )
-        ),
-      ]
+    body:Column(
+      children: widgets,
     ),
     );
   }
 }
-    
-    

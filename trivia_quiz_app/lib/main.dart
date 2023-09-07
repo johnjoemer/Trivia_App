@@ -1,10 +1,10 @@
 
 import 'package:flutter/material.dart';
-import 'package:trivia_quiz_app/resources/api_fetcher.dart';
+// import 'package:trivia_quiz_app/resources/api_fetcher.dart';
 import 'package:trivia_quiz_app/screens/home_page.dart';
 // import 'package:trivia_quiz_app/screens/home_page.dart';
 // import 'package:trivia_quiz_app/resources/api_fetcher.dart';
-import 'package:trivia_quiz_app/screens/quizfinish_page.dart';
+// import 'package:trivia_quiz_app/screens/quizfinish_page.dart';
 
 
 void main() async {
@@ -38,7 +38,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _playerName = TextEditingController();
 
-  //Future<List<Map<String, dynamic>>>? _dataFuture;
+  // Future<List<Map<String, dynamic>>>? _dataFuture;
   bool namePresent = true;
 
   @override
@@ -87,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 // setState(() {
                 //   _dataFuture = fetchData(); 
                 // });
-              //await _dataFuture; // uncomment if itetest ang data fetching
+              // await _dataFuture; // uncomment if itetest ang data fetching
               Navigator.push(
                   context, 
                   MaterialPageRoute(builder: (context) => const HomePage()),
@@ -114,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
           //     else{
           //       final data = snapshot.data!;
           //       // print('Category: ${data.first['category']}');
-          //       return Text('Question 1: ${data.first['question']}');
+          //       return Text('Difficulty: ${data.first['difficulty']}');
           //     }
           //   },
           // ),
