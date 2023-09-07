@@ -1,5 +1,6 @@
 // import 'dart:math';
 import 'package:flutter/material.dart';
+// import 'package:trivia_quiz_app/resources/api_fetcher.dart';
 
 class QuizPage extends StatefulWidget {
   const QuizPage({super.key});
@@ -20,22 +21,21 @@ class _QuizPageState extends State<QuizPage> {
     body: Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        
+       
         Container(
-        padding: const EdgeInsets.all(5),
+        padding:const EdgeInsets.all(5),
           child: Column(
             children: [
               const SizedBox(
                 width: 500,
                 height: 300,
-                child: Text("Quiz Question"),
+                child: Text('Question Field'),
               ),
 
               const SizedBox(height: 7),
 
               SizedBox(
                 width: 500,
-                height: 70,
                 child: ElevatedButton(
                   onPressed: (){
                 
@@ -48,7 +48,6 @@ class _QuizPageState extends State<QuizPage> {
 
               SizedBox(
                 width: 500,
-                height: 70,
                 child: ElevatedButton(
                   onPressed: (){
                 
@@ -61,7 +60,6 @@ class _QuizPageState extends State<QuizPage> {
 
               SizedBox(
                 width: 500,
-                height: 70,
                 child: ElevatedButton(
                   onPressed: (){
                 
@@ -74,7 +72,6 @@ class _QuizPageState extends State<QuizPage> {
 
               SizedBox(
                 width: 500,
-                height: 70,
                 child: ElevatedButton(
                   onPressed: (){
                 
