@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-const String baseUrl = "https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple";
+String baseUrl = "https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple";
 Future<List<Map<String, dynamic>>> fetchData() async {
    final response = await http.get(Uri.parse(baseUrl));
 
@@ -12,15 +12,17 @@ Future<List<Map<String, dynamic>>> fetchData() async {
     List<Map<String, dynamic>> dataList = [];
 
     for (var result in results) {
+      List<dynamic> incorrectAnswers = result['incorrect_answers'];
       dataList.add({
-        'category': result['category'],
-        'type': result['type'],
-        'difficulty': result['difficulty'],
-        'question': result['question'],
-        'correct_answer': result['correct_answer'],
-        'incorrect_answer': result['incorrect_answer'],
+        'categories': result['category'],
+        'types': result['type'],
+        'difficulteis': result['difficulty'],
+        'questions': result['question'],
+        'correctAnswers': result['correct_answer'],
+        'incorrect_answers': incorrectAnswers,
       });
     }
+    print(dataList);
     return dataList;
    }   
 
