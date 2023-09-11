@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:trivia_quiz_app/main.dart';
+import 'package:trivia_quiz_app/screens/checkanswers_page.dart';
 import 'dart:convert';
 
 import 'package:trivia_quiz_app/screens/home_page.dart';
@@ -30,6 +31,7 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
   bool isGameOver = false;
   final PageController _pageController = PageController();
   List<Map<String, dynamic>> questions = [];
+  List<dynamic> userAnswers = [];
 
   Future<List<Map<String, dynamic>>>? questionsFuture;
 
@@ -65,6 +67,12 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    userAnswers = [];
+  }
+
+  @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
@@ -88,9 +96,23 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
           
           //checks if the game has started or is over
           if (isGameStarted || isGameOver)
-            // if the game is over, it will call QuizSummary and show how many correct answers the player gets
             if (isGameOver)
-              QuizSummary(correctAnswers: correctAnswers)
+              Column(
+                children: [
+                  QuizSummary(correctAnswers: correctAnswers),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              QuizReview(reviewList: questions, userAnswers: userAnswers),
+                        ),
+                      );
+                    },
+                    child: Text('View All Questions and Answers'),
+                  ),
+                ],
+              )
             //else if the game is not over, it will continue showing the questions
             else
               Flexible(
@@ -122,7 +144,11 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
                           return QuestionCard(
                             question: question,
                             allAnswers: allAnswers,
-                            onAnswerSelected: handleAnswer,
+                            onAnswerSelected: (selectedAnswer) {
+                              handleAnswer(
+                                  selectedAnswer == question['correctAnswer'],
+                                  selectedAnswer);
+                            },
                           );
                         },
                       );
@@ -153,17 +179,18 @@ void startGame() {
   }
 }
 
-  void handleAnswer(bool isCorrect) {
+  void handleAnswer(bool isCorrect, dynamic selectedAnswer) {
+    userAnswers.add(selectedAnswer);
+
     if (isCorrect) {
       setState(() {
-        highScore++;
         correctAnswers++;
       });
     }
 
     if (_pageController.page! < questions.length - 1) {
       _pageController.nextPage(
-        duration: const Duration(milliseconds: 120),
+        duration: Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
     } else {
