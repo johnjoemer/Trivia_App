@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:trivia_quiz_app/main.dart';
-import 'package:trivia_quiz_app/resources/api_fetcher.dart';
 import 'package:trivia_quiz_app/screens/quiz_page.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+int highScore = 0;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -32,7 +29,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   String defaultURL = "https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple";
-  String name = "Gladywin"; //replace with the player's name
   
   void categoryNum(int num) {
     setState(() {
@@ -49,18 +45,18 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       
       body: Padding(
-        padding: EdgeInsets.all(30),
+        padding: const EdgeInsets.all(30),
 
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
 
             Text (
-              "Hi, $name!",
-              style: TextStyle(fontSize: 30),
+              "Hi, $dispName!",
+              style: const TextStyle(fontSize: 30),
             ),
 
-            SizedBox(
+            const SizedBox(
               height: 25,
             ),
 
@@ -74,7 +70,7 @@ class _HomePageState extends State<HomePage> {
                   categoryNum(9);
                   Navigator.push(
                     context, 
-                    MaterialPageRoute(builder: (context) => const MyHomePage()),
+                    MaterialPageRoute(builder: (context) => const QuizPage()),
                   );
                  },
                 style: ElevatedButton.styleFrom(
@@ -94,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                   categoryNum(27);
                   Navigator.push(
                     context, 
-                    MaterialPageRoute(builder: (context) => const MyHomePage()),
+                    MaterialPageRoute(builder: (context) => const QuizPage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -114,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                   categoryNum(28);
                   Navigator.push(
                     context, 
-                    MaterialPageRoute(builder: (context) => const MyHomePage()),
+                    MaterialPageRoute(builder: (context) => const QuizPage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -134,7 +130,7 @@ class _HomePageState extends State<HomePage> {
                   categoryNum(18);
                   Navigator.push(
                     context, 
-                    MaterialPageRoute(builder: (context) => const MyHomePage()),
+                    MaterialPageRoute(builder: (context) => const QuizPage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -154,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                   categoryNum(19);
                   Navigator.push(
                     context, 
-                    MaterialPageRoute(builder: (context) => const MyHomePage()),
+                    MaterialPageRoute(builder: (context) => const QuizPage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -162,7 +158,27 @@ class _HomePageState extends State<HomePage> {
                 ),
                 child: const Text( 'Science: Mathematics' ),
               )
-            )
+            ),
+
+            const SizedBox(height: 25),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              onPressed: () {
+                questionCounter = 1;
+                Navigator.push(
+                  context, 
+                  MaterialPageRoute(builder: (context) => const MyHomePage()),
+                );
+              },
+              child: const Text(
+                'Home',
+                style: TextStyle(
+                color: Colors.white,
+                ),
+              ),
+            ),
           ],
         ),
       ),

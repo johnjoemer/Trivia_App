@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:trivia_quiz_app/main.dart';
 import 'dart:convert';
 
-void main() {
-  runApp(quiz_page());
-}
+import 'package:trivia_quiz_app/screens/home_page.dart';
+String baseUrl = "https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple";
+int questionCounter = 1;
 
-class quiz_page extends StatelessWidget {
+class QuizPage extends StatelessWidget {
+  const QuizPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,14 +28,15 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
   int correctAnswers = 0;
   bool isGameStarted = false;
   bool isGameOver = false;
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   List<Map<String, dynamic>> questions = [];
 
   Future<List<Map<String, dynamic>>>? questionsFuture;
 
+  
   Future<List<Map<String, dynamic>>> fetchQuestions() async {
     final response = await http.get(
-        Uri.parse('https://opentdb.com/api.php?amount=10&category=9')); //sends http get request
+        Uri.parse(baseUrl)); //sends http get request
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = json.decode(response.body); //the JSON from the HTTP is decoded
@@ -51,7 +55,7 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
           'incorrectAnswers': incorrectAnswers,
         });
       }
-
+      //print(questionList);
       return questionList; //After processing all trivia questions, the function returns the questionList
     }
     
@@ -70,18 +74,16 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Trivia Quiz App'),
+        title: const Text('Trivia Quiz App'),
       ),
       
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          //checks if the game has not started yet and display a "start game" button
           if (!isGameStarted)
             ElevatedButton(
               onPressed: startGame,
-              child: Text('Start Game'),
+              child: const Text('Start Game'),
             ),
           
           //checks if the game has started or is over
@@ -91,12 +93,15 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
               QuizSummary(correctAnswers: correctAnswers)
             //else if the game is not over, it will continue showing the questions
             else
-              Expanded(
+              Flexible(
                 child: FutureBuilder<List<Map<String, dynamic>>>(
                   future: questionsFuture,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
+                      return const SizedBox(
+                                width: 40, height: 40, 
+                                child: CircularProgressIndicator())
+                              ;
                     }
                     
                     else if (snapshot.hasError) {
@@ -112,7 +117,7 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
                           final question = questions[index]; //retrieves questions at the current index
                           final List<dynamic> allAnswers = [...question['incorrectAnswers'], question['correctAnswer']]; //store all answers / choices in a list
                           allAnswers.shuffle(); //shuffle the answers / choices
-
+      
                           //then it will pass question, allAnswers, and handleAnswer to QuestionCard
                           return QuestionCard(
                             question: question,
@@ -124,7 +129,7 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
                     }
                     
                     else {
-                      return CircularProgressIndicator();
+                      return const CircularProgressIndicator();
                     }
                   },
                 ),
@@ -151,13 +156,14 @@ void startGame() {
   void handleAnswer(bool isCorrect) {
     if (isCorrect) {
       setState(() {
+        highScore++;
         correctAnswers++;
       });
     }
 
     if (_pageController.page! < questions.length - 1) {
       _pageController.nextPage(
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 120),
         curve: Curves.easeOut,
       );
     } else {
@@ -173,7 +179,7 @@ class QuestionCard extends StatelessWidget {
   final List<dynamic> allAnswers;
   final Function(bool) onAnswerSelected; // callback function that will be called when the user selects an answer
 
-  QuestionCard({
+  const QuestionCard({super.key, 
     required this.question,
     required this.allAnswers,
     required this.onAnswerSelected,
@@ -187,27 +193,46 @@ class QuestionCard extends StatelessWidget {
         //print the questions
         Text(
           question['question'],
-          style: TextStyle(fontSize: 18),
+          style: const TextStyle(fontSize: 18),
           textAlign: TextAlign.center,
         ),
 
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
 
         //for each answer in the allAnswer list, the function will be executed
         ...allAnswers.map((answer) {
           return Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Colors.orange,
+                backgroundColor: Colors.lightBlue,
               ),
               onPressed: () {
+                questionCounter++;
                 onAnswerSelected(answer == question['correctAnswer']);
               },
               child: Text(answer),
             ),
           );
         }),
+        // Question Counter
+        const SizedBox(height: 250),
+        Text('Question $questionCounter out of 10'),
+
+        const SizedBox(height: 25),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+          ),
+          onPressed: () {
+            showText = true;
+            Navigator.push(
+              context, 
+              MaterialPageRoute(builder: (context) => const MyHomePage()),
+            );
+          },
+          child: const Text('Home'),
+        ),
       ],
     );
   }
@@ -217,20 +242,49 @@ class QuestionCard extends StatelessWidget {
 class QuizSummary extends StatelessWidget {
   final int correctAnswers;
 
-  QuizSummary({required this.correctAnswers});
+  const QuizSummary({super.key, required this.correctAnswers});
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text('Quiz Completed!'),
-        Text('Correct Answers: $correctAnswers'),
+        const SizedBox (
+          width: 200, height: 50,
+          child: Text('Quiz Completed!')
+        ),
+        SizedBox (
+          width: 200, height: 50,
+          child: Text('Correct Answers: $correctAnswers')
+        ),
+        SizedBox(
+          width: 200, height: 50,
+          child: ElevatedButton(
+            onPressed: () {
+              showText = true;
+              questionCounter = 1;
+              Navigator.push(
+                context, 
+                MaterialPageRoute(builder: (context) => const HomePage()),
+              );
+            },
+            child: const Text('Start Again'),
+          ),
+        ),
+
+        const SizedBox(height: 25),
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+          ),
           onPressed: () {
-            Navigator.of(context).pop();
+            questionCounter = 1;
+            Navigator.push(
+              context, 
+              MaterialPageRoute(builder: (context) => const MyHomePage()),
+            );
           },
-          child: Text('Start Again'),
+          child: const Text('Home'),
         ),
       ],
     );
