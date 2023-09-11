@@ -147,7 +147,7 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.only(top: 15.0),
               child: ElevatedButton(
                 onPressed: () { 
-                  categoryNum(19);
+                  categoryNum(15);
                   Navigator.push(
                     context, 
                     MaterialPageRoute(builder: (context) => const QuizPage()),
@@ -156,7 +156,7 @@ class _HomePageState extends State<HomePage> {
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
                 ),
-                child: const Text( 'Science: Mathematics' ),
+                child: const Text( 'Video Games' ),
               )
             ),
 
