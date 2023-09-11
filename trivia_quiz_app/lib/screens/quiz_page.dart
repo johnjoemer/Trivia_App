@@ -3,10 +3,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 void main() {
-  runApp(quiz_page());
+  runApp(MyApp());
 }
 
-class quiz_page extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,21 +27,22 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
   bool isGameOver = false;
   PageController _pageController = PageController();
   List<Map<String, dynamic>> questions = [];
+  List<dynamic> userAnswers = [];
 
   Future<List<Map<String, dynamic>>>? questionsFuture;
 
   Future<List<Map<String, dynamic>>> fetchQuestions() async {
     final response = await http.get(
-        Uri.parse('https://opentdb.com/api.php?amount=10&category=9')); //sends http get request
+        Uri.parse('https://opentdb.com/api.php?amount=10&category=9'));
 
     if (response.statusCode == 200) {
-      final Map<String, dynamic> jsonData = json.decode(response.body); //the JSON from the HTTP is decoded
-      final List<dynamic> results = jsonData['results']; //extracts the result 
+      final Map<String, dynamic> jsonData = json.decode(response.body);
+      final List<dynamic> results = jsonData['results'];
 
-      List<Map<String, dynamic>> questionList = []; //empty list for the trivia questions
+      List<Map<String, dynamic>> questionList = [];
 
-      for (var result in results) { //iterate through each questions in the result list
-        List<dynamic> incorrectAnswers = result['incorrect_answers']; // extracts the 'incorrect_answers' from the trivia question
+      for (var result in results) {
+        List<dynamic> incorrectAnswers = result['incorrect_answers'];
         questionList.add({
           'category': result['category'],
           'type': result['type'],
@@ -49,15 +50,20 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
           'question': result['question'],
           'correctAnswer': result['correct_answer'],
           'incorrectAnswers': incorrectAnswers,
+          'userAnswer': null, // Initialize user answer as null
         });
       }
 
-      return questionList; //After processing all trivia questions, the function returns the questionList
-    }
-    
-    else {
+      return questionList;
+    } else {
       throw Exception('Failed to load questions');
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    userAnswers = [];
   }
 
   @override
@@ -72,24 +78,33 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
       appBar: AppBar(
         title: Text('Trivia Quiz App'),
       ),
-      
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          //checks if the game has not started yet and display a "start game" button
           if (!isGameStarted)
             ElevatedButton(
               onPressed: startGame,
               child: Text('Start Game'),
             ),
-          
-          //checks if the game has started or is over
           if (isGameStarted || isGameOver)
-            // if the game is over, it will call QuizSummary and show how many correct answers the player gets
             if (isGameOver)
-              QuizSummary(correctAnswers: correctAnswers)
-            //else if the game is not over, it will continue showing the questions
+              Column(
+                children: [
+                  QuizSummary(correctAnswers: correctAnswers),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              QuizReview(reviewList: questions, userAnswers: userAnswers),
+                        ),
+                      );
+                    },
+                    child: Text('View All Questions and Answers'),
+                  ),
+                ],
+              )
             else
               Expanded(
                 child: FutureBuilder<List<Map<String, dynamic>>>(
@@ -97,33 +112,32 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return CircularProgressIndicator();
-                    }
-                    
-                    else if (snapshot.hasError) {
+                    } else if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
-                    }
-                    
-                    else if (snapshot.hasData) {
+                    } else if (snapshot.hasData) {
                       questions = snapshot.data!;
                       return PageView.builder(
                         controller: _pageController,
                         itemCount: questions.length,
                         itemBuilder: (context, index) {
-                          final question = questions[index]; //retrieves questions at the current index
-                          final List<dynamic> allAnswers = [...question['incorrectAnswers'], question['correctAnswer']]; //store all answers / choices in a list
-                          allAnswers.shuffle(); //shuffle the answers / choices
-
-                          //then it will pass question, allAnswers, and handleAnswer to QuestionCard
+                          final question = questions[index];
+                          final List<dynamic> allAnswers = [
+                            ...question['incorrectAnswers'],
+                            question['correctAnswer']
+                          ];
+                          allAnswers.shuffle();
                           return QuestionCard(
                             question: question,
                             allAnswers: allAnswers,
-                            onAnswerSelected: handleAnswer,
+                            onAnswerSelected: (selectedAnswer) {
+                              handleAnswer(
+                                  selectedAnswer == question['correctAnswer'],
+                                  selectedAnswer);
+                            },
                           );
                         },
                       );
-                    }
-                    
-                    else {
+                    } else {
                       return CircularProgressIndicator();
                     }
                   },
@@ -134,21 +148,22 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
     );
   }
 
-void startGame() {
-  setState(() {
-    correctAnswers = 0;
-    isGameStarted = true;
-    isGameOver = false;
-    questionsFuture = fetchQuestions(); // Start fetching questions
-  });
+  void startGame() {
+    setState(() {
+      correctAnswers = 0;
+      isGameStarted = true;
+      isGameOver = false;
+      questionsFuture = fetchQuestions();
+    });
 
-  // ensure that _pageController is initialized
-  if (_pageController.hasClients) {
-    _pageController.jumpToPage(0);
+    if (_pageController.hasClients) {
+      _pageController.jumpToPage(0);
+    }
   }
-}
 
-  void handleAnswer(bool isCorrect) {
+  void handleAnswer(bool isCorrect, dynamic selectedAnswer) {
+    userAnswers.add(selectedAnswer);
+
     if (isCorrect) {
       setState(() {
         correctAnswers++;
@@ -171,7 +186,7 @@ void startGame() {
 class QuestionCard extends StatelessWidget {
   final Map<String, dynamic> question;
   final List<dynamic> allAnswers;
-  final Function(bool) onAnswerSelected; // callback function that will be called when the user selects an answer
+  final Function(dynamic) onAnswerSelected;
 
   QuestionCard({
     required this.question,
@@ -184,16 +199,12 @@ class QuestionCard extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        //print the questions
         Text(
           question['question'],
           style: TextStyle(fontSize: 18),
           textAlign: TextAlign.center,
         ),
-
         SizedBox(height: 20),
-
-        //for each answer in the allAnswer list, the function will be executed
         ...allAnswers.map((answer) {
           return Padding(
             padding: EdgeInsets.symmetric(vertical: 8.0),
@@ -202,9 +213,9 @@ class QuestionCard extends StatelessWidget {
                 primary: Colors.orange,
               ),
               onPressed: () {
-                onAnswerSelected(answer == question['correctAnswer']);
+                onAnswerSelected(answer);
               },
-              child: Text(answer),
+              child: Text(answer.toString()),
             ),
           );
         }),
@@ -213,7 +224,6 @@ class QuestionCard extends StatelessWidget {
   }
 }
 
-//once the game is done, it will provide the score and an option to start the game again
 class QuizSummary extends StatelessWidget {
   final int correctAnswers;
 
@@ -233,6 +243,86 @@ class QuizSummary extends StatelessWidget {
           child: Text('Start Again'),
         ),
       ],
+    );
+  }
+}
+
+class QuizReview extends StatelessWidget {
+  final List<Map<String, dynamic>> reviewList;
+  final List<dynamic> userAnswers;
+
+  QuizReview({required this.reviewList, required this.userAnswers});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Quiz Review'),
+      ),
+      body: ListView.builder(
+        itemCount: reviewList.length,
+        itemBuilder: (context, index) {
+          final question = reviewList[index];
+
+          return QuestionReviewCard(
+            question: question,
+            userAnswer: userAnswers[index], // get user's answer for this question
+          );
+        },
+      ),
+    );
+  }
+}
+
+class QuestionReviewCard extends StatelessWidget {
+  final Map<String, dynamic> question;
+  final dynamic userAnswer;
+
+  QuestionReviewCard({
+    required this.question,
+    required this.userAnswer,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    bool isCorrect = userAnswer == question['correctAnswer'];
+    Color answerColor = isCorrect ? Colors.green : Colors.red;
+
+    return Card(
+      margin: EdgeInsets.all(16.0),
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              question['question'],
+              style: TextStyle(fontSize: 18),
+            ),
+
+            SizedBox(height: 10),
+
+            Text(
+              '${userAnswer}',
+              style: TextStyle(
+                color: answerColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            SizedBox(height: 10),
+
+            if (!isCorrect) // Only show the correct answer if the user's answer is incorrect
+              Text(
+                'Correct Answer: ${question['correctAnswer']}',
+                style: TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

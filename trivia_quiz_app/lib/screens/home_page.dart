@@ -31,6 +31,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+ //Image.asset(class.variable)
   String defaultURL = "https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple";
   String name = "Gladywin"; //replace with the player's name
   
