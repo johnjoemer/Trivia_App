@@ -1,11 +1,8 @@
 
 import 'package:flutter/material.dart';
-// import 'package:trivia_quiz_app/resources/api_fetcher.dart';
 import 'package:trivia_quiz_app/screens/home_page.dart';
-// import 'package:trivia_quiz_app/screens/home_page.dart';
-// import 'package:trivia_quiz_app/resources/api_fetcher.dart';
-// import 'package:trivia_quiz_app/screens/quizfinish_page.dart';
-
+String dispName = "";
+bool showText = false;
 
 void main() async {
   runApp(const MyApp());
@@ -37,8 +34,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _playerName = TextEditingController();
-
-  // Future<List<Map<String, dynamic>>>? _dataFuture;
   bool namePresent = true;
 
   @override
@@ -56,6 +51,8 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Column(
          mainAxisAlignment: MainAxisAlignment.center,
          children: <Widget>[
+          if(showText)
+          Text('Highest Score: $dispName = $highScore'),
           const Text("Enter your name to proceed"),
 
           const SizedBox(height: 15),
@@ -70,7 +67,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   namePresent = false;
                 });
               },
-              // keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: "Player Name",
@@ -83,42 +79,16 @@ class _MyHomePageState extends State<MyHomePage> {
           SizedBox(
             width: 200,
             child: ElevatedButton(
-              onPressed: namePresent ? null:  () async { // 
-                // setState(() {
-                //   _dataFuture = fetchData(); 
-                // });
-              // await _dataFuture; // uncomment if itetest ang data fetching
-              Navigator.push(
-                  context, 
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-              );
+              onPressed: namePresent ? null:  () async {
+                dispName = _playerName.text; 
+                Navigator.push(
+                    context, 
+                    MaterialPageRoute(builder: (context) => const HomePage()),
+                );
               },
               child: const Text("Proceed"),
             ),
           ),
-
-          // Pang test lang to ng data fetching, uncomment or comment out na lang if need
-          // const SizedBox(height: 20),
-          // FutureBuilder<List<Map<String, dynamic>>>(
-          //   future: _dataFuture,
-          //   builder: (context, snapshot){
-          //     if (snapshot.connectionState == ConnectionState.waiting){
-          //       return const CircularProgressIndicator();
-          //     }
-          //     else if (snapshot.hasError) {
-          //       return Text('Error: ${snapshot.error}');
-          //     }
-          //     else if (!snapshot.hasData){
-          //       return const Text('Press the Proceed button to fetch data.');
-          //     }
-          //     else{
-          //       final data = snapshot.data!;
-          //       // print('Category: ${data.first['category']}');
-          //       return Text('Difficulty: ${data.first['difficulty']}');
-          //     }
-          //   },
-          // ),
-
 
         ]
       ),
