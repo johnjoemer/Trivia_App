@@ -40,21 +40,20 @@ class QuizSummary extends StatelessWidget {
 
           const SizedBox(height: 15),
 
-          Container(
-            width: 150,
-            child: ElevatedButton(
-              onPressed: () {
-                questionCounter = 1;
-                Navigator.push(
-                  context, 
-                  MaterialPageRoute(builder: (context) => const MyHomePage()),
-                );
-              },
-              child: const Text('Home'),
-            ),
-          ),
+          // Container(
+          //   width: 150,
+          //   child: ElevatedButton(
+          //     onPressed: () {
+          //       questionCounter = 1;
+          //       Navigator.push(
+          //         context, 
+          //         MaterialPageRoute(builder: (context) => const MyHomePage()),
+          //       );
+          //     },
+          //     child: const Text('Home'),
+          //   ),
+          // ),
 
-          const SizedBox(height: 15),
         ],
       )
     );
