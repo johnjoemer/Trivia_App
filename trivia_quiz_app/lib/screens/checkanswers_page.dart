@@ -4,13 +4,13 @@ class QuizReview extends StatelessWidget {
   final List<Map<String, dynamic>> reviewList;
   final List<dynamic> userAnswers;
 
-  QuizReview({required this.reviewList, required this.userAnswers});
+  const QuizReview({super.key, required this.reviewList, required this.userAnswers});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Quiz Review'),
+        title: const Text('Quiz Review'),
       ),
       body: ListView.builder(
         itemCount: reviewList.length,
@@ -34,7 +34,7 @@ class QuestionReviewCard extends StatelessWidget {
   final Map<String, dynamic> question;
   final dynamic userAnswer;
 
-  QuestionReviewCard({
+  const QuestionReviewCard({super.key, 
     required this.questionNumber,
     required this.question,
     required this.userAnswer,
@@ -46,33 +46,33 @@ class QuestionReviewCard extends StatelessWidget {
     Color answerColor = isCorrect ? Colors.green : Colors.red;
 
     return Card(
-      margin: EdgeInsets.all(16.0),
+      margin: const EdgeInsets.all(16.0),
       child: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Question $questionNumber: ${question['question']}',
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
 
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
 
             Text(
-              '${userAnswer}',
+              '$userAnswer',
               style: TextStyle(
                 color: answerColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
 
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
 
             if (!isCorrect) // Only show the correct answer if the user's answer is incorrect
               Text(
                 'Correct Answer: ${question['correctAnswer']}',
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.green,
                   fontWeight: FontWeight.bold,
                 ),
