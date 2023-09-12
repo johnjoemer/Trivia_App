@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
                   categoryNum(9);
                   Navigator.push(
                     context, 
-                    MaterialPageRoute(builder: (context) => const QuizPage()),
+                    MaterialPageRoute(builder: (context) => TriviaQuizPage()),
                   );
                  },
                 style: ElevatedButton.styleFrom(
@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                   categoryNum(27);
                   Navigator.push(
                     context, 
-                    MaterialPageRoute(builder: (context) => const QuizPage()),
+                    MaterialPageRoute(builder: (context) => TriviaQuizPage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -110,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                   categoryNum(28);
                   Navigator.push(
                     context, 
-                    MaterialPageRoute(builder: (context) => const QuizPage()),
+                    MaterialPageRoute(builder: (context) => TriviaQuizPage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -130,7 +130,7 @@ class _HomePageState extends State<HomePage> {
                   categoryNum(18);
                   Navigator.push(
                     context, 
-                    MaterialPageRoute(builder: (context) => const QuizPage()),
+                    MaterialPageRoute(builder: (context) => TriviaQuizPage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -150,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                   categoryNum(15);
                   Navigator.push(
                     context, 
-                    MaterialPageRoute(builder: (context) => const QuizPage()),
+                    MaterialPageRoute(builder: (context) => TriviaQuizPage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -163,7 +163,7 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 25),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
+                backgroundColor: Color.fromARGB(255, 250, 158, 52),
               ),
               onPressed: () {
                 questionCounter = 1;
