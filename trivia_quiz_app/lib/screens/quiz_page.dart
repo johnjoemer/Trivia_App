@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:trivia_quiz_app/main.dart';
 import 'package:trivia_quiz_app/screens/checkanswers_page.dart';
+import 'package:trivia_quiz_app/screens/home_page.dart';
 import 'dart:convert';
 import 'package:trivia_quiz_app/screens/quiz_summary.dart';
 
@@ -109,10 +110,11 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
                   width: 150,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 250, 158, 52),
+                      backgroundColor: const Color.fromARGB(255, 250, 158, 52),
                     ),
                     onPressed: () {
                       showText = true;
+                      highScore = correctAnswers;
                       Navigator.push(
                         context, 
                         MaterialPageRoute(builder: (context) => const MyHomePage()),
@@ -151,12 +153,18 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
                         controller: _pageController,
                         itemCount: questions.length,
                         itemBuilder: (context, index) {
+                          final questionNumber = index + 1;
                           final question = questions[index]; //retrieves questions at the current index
+                          // List<dynamic> shuffledQuestions = [...question[index]];
+                          // List<dynamic> shuffledQuestions = [question['question']];
+                          // shuffledQuestions.shuffle();
                           final List<dynamic> allAnswers = [...question['incorrectAnswers'], question['correctAnswer']]; //store all answers / choices in a list
                           allAnswers.shuffle(); //shuffle the answers / choices
       
                           //then it will pass question, allAnswers, and handleAnswer to QuestionCard
                           return QuestionCard(
+                            // shuffledQuestions : shuffledQuestions,
+                            questionNumber: questionNumber,
                             question: question,
                             allAnswers: allAnswers,
                             onAnswerSelected: (selectedAnswer) {
@@ -219,11 +227,16 @@ void startGame() {
 }
 
 class QuestionCard extends StatelessWidget {
+  // final List<dynamic> shuffledQuestions;
+  final int questionNumber;
   final Map<String, dynamic> question;
   final List<dynamic> allAnswers;
   final Function(dynamic) onAnswerSelected; // callback function that will be called when the user selects an answer
+  
 
-  const QuestionCard({super.key, 
+  const QuestionCard({super.key,
+    // required this.shuffledQuestions, 
+    required this.questionNumber,
     required this.question,
     required this.allAnswers,
     required this.onAnswerSelected,
@@ -236,10 +249,12 @@ class QuestionCard extends StatelessWidget {
       children: [
         //print the questions
         Text(
-          question['question'],
+          'Question $questionNumber | ${question['question']}',
           style: const TextStyle(fontSize: 18),
           textAlign: TextAlign.center,
         ),
+        // ShuffledQuestionsWidget(shuffledQuestions: shuffledQuestions),
+        const SizedBox(height: 20),
 
         const SizedBox(height: 20),
 
@@ -258,7 +273,7 @@ class QuestionCard extends StatelessWidget {
         }),
         
         // Question Counter
-        Text('Question $questionCounter out of 10'),
+        // Text('Question $questionCounter out of 10'),
 
         const SizedBox(height: 70),
 
@@ -268,6 +283,7 @@ class QuestionCard extends StatelessWidget {
           ),
           onPressed: () {
             showText = true;
+            // highScore = correctAnswers;
             Navigator.push(
               context, 
               MaterialPageRoute(builder: (context) => const MyHomePage()),

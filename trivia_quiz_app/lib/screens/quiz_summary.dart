@@ -30,30 +30,17 @@ class QuizSummary extends StatelessWidget {
               onPressed: () {
                 showText = true;
                 questionCounter = 1;
+                highScore = correctAnswers;
                 Navigator.push(
                   context, 
                   MaterialPageRoute(builder: (context) => const HomePage()),
                 );
+               
               },
               child: const Text('Start Again'),
             ),
 
           const SizedBox(height: 15),
-
-          // Container(
-          //   width: 150,
-          //   child: ElevatedButton(
-          //     onPressed: () {
-          //       questionCounter = 1;
-          //       Navigator.push(
-          //         context, 
-          //         MaterialPageRoute(builder: (context) => const MyHomePage()),
-          //       );
-          //     },
-          //     child: const Text('Home'),
-          //   ),
-          // ),
-
         ],
       )
     );
