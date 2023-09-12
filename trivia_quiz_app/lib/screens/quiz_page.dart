@@ -3,22 +3,10 @@ import 'package:http/http.dart' as http;
 import 'package:trivia_quiz_app/main.dart';
 import 'package:trivia_quiz_app/screens/checkanswers_page.dart';
 import 'dart:convert';
+import 'package:trivia_quiz_app/screens/quiz_summary.dart';
 
-import 'package:trivia_quiz_app/screens/home_page.dart';
 String baseUrl = "https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple";
 int questionCounter = 1;
-
-class QuizPage extends StatelessWidget {
-  const QuizPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Trivia Quiz App',
-      home: TriviaQuizPage(),
-    );
-  }
-}
 
 class TriviaQuizPage extends StatefulWidget {
   @override
@@ -55,6 +43,7 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
           'question': result['question'],
           'correctAnswer': result['correct_answer'],
           'incorrectAnswers': incorrectAnswers,
+          'userAnswer': null, // Initialize user answer as null
         });
       }
       //print(questionList);
@@ -89,11 +78,13 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (!isGameStarted)
-            ElevatedButton(
-              onPressed: startGame,
-              child: const Text('Start Game'),
+            Center(
+              child: ElevatedButton(
+                onPressed: startGame,
+                child: const Text('Start Game'),
+              ),
             ),
-          
+            
           //checks if the game has started or is over
           if (isGameStarted || isGameOver)
             if (isGameOver)
@@ -113,6 +104,7 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
                   ),
                 ],
               )
+
             //else if the game is not over, it will continue showing the questions
             else
               Flexible(
@@ -120,10 +112,9 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
                   future: questionsFuture,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const SizedBox(
-                                width: 40, height: 40, 
-                                child: CircularProgressIndicator())
-                              ;
+                      return const Center(
+                        child: CircularProgressIndicator()
+                      );
                     }
                     
                     else if (snapshot.hasError) {
@@ -155,7 +146,9 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
                     }
                     
                     else {
-                      return const CircularProgressIndicator();
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
                     }
                   },
                 ),
@@ -204,7 +197,7 @@ void startGame() {
 class QuestionCard extends StatelessWidget {
   final Map<String, dynamic> question;
   final List<dynamic> allAnswers;
-  final Function(bool) onAnswerSelected; // callback function that will be called when the user selects an answer
+  final Function(dynamic) onAnswerSelected; // callback function that will be called when the user selects an answer
 
   const QuestionCard({super.key, 
     required this.question,
@@ -231,81 +224,25 @@ class QuestionCard extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.lightBlue,
-              ),
               onPressed: () {
-                questionCounter++;
-                onAnswerSelected(answer == question['correctAnswer']);
+                onAnswerSelected(answer);
               },
-              child: Text(answer),
+              child: Text(answer.toString()),
             ),
           );
         }),
+        
         // Question Counter
-        const SizedBox(height: 250),
         Text('Question $questionCounter out of 10'),
 
-        const SizedBox(height: 25),
+        const SizedBox(height: 70),
+
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
+            backgroundColor: Color.fromARGB(255, 250, 158, 52),
           ),
           onPressed: () {
             showText = true;
-            Navigator.push(
-              context, 
-              MaterialPageRoute(builder: (context) => const MyHomePage()),
-            );
-          },
-          child: const Text('Home'),
-        ),
-      ],
-    );
-  }
-}
-
-//once the game is done, it will provide the score and an option to start the game again
-class QuizSummary extends StatelessWidget {
-  final int correctAnswers;
-
-  const QuizSummary({super.key, required this.correctAnswers});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        const SizedBox (
-          width: 200, height: 50,
-          child: Text('Quiz Completed!')
-        ),
-        SizedBox (
-          width: 200, height: 50,
-          child: Text('Correct Answers: $correctAnswers')
-        ),
-        SizedBox(
-          width: 200, height: 50,
-          child: ElevatedButton(
-            onPressed: () {
-              showText = true;
-              questionCounter = 1;
-              Navigator.push(
-                context, 
-                MaterialPageRoute(builder: (context) => const HomePage()),
-              );
-            },
-            child: const Text('Start Again'),
-          ),
-        ),
-
-        const SizedBox(height: 25),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
-          ),
-          onPressed: () {
-            questionCounter = 1;
             Navigator.push(
               context, 
               MaterialPageRoute(builder: (context) => const MyHomePage()),
