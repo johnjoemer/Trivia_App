@@ -100,8 +100,32 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
                         ),
                       );
                     },
-                    child: Text('View All Questions and Answers'),
+                    child: const Text('View All Questions and Answers'),
                   ),
+                  
+                  const SizedBox(height: 15),
+
+                  SizedBox(
+                  width: 150,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(255, 250, 158, 52),
+                    ),
+                    onPressed: () {
+                      showText = true;
+                      Navigator.push(
+                        context, 
+                        MaterialPageRoute(builder: (context) => const MyHomePage()),
+                      );
+                    },
+                    child: const Text(
+                      'Home',
+                      style: TextStyle(
+                      color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
                 ],
               )
 
@@ -183,7 +207,7 @@ void startGame() {
 
     if (_pageController.page! < questions.length - 1) {
       _pageController.nextPage(
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 120),
         curve: Curves.easeOut,
       );
     } else {
@@ -225,6 +249,7 @@ class QuestionCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: ElevatedButton(
               onPressed: () {
+                questionCounter++;
                 onAnswerSelected(answer);
               },
               child: Text(answer.toString()),
@@ -248,7 +273,12 @@ class QuestionCard extends StatelessWidget {
               MaterialPageRoute(builder: (context) => const MyHomePage()),
             );
           },
-          child: const Text('Home'),
+          child: const Text(
+            'Home',
+            style: TextStyle(
+            color: Colors.white,
+            ),
+          ),
         ),
       ],
     );

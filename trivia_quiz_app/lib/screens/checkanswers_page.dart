@@ -16,8 +16,10 @@ class QuizReview extends StatelessWidget {
         itemCount: reviewList.length,
         itemBuilder: (context, index) {
           final question = reviewList[index];
+          final questionNumber = index + 1;
 
           return QuestionReviewCard(
+            questionNumber: questionNumber,
             question: question,
             userAnswer: userAnswers[index], // get user's answer for this question
           );
@@ -28,10 +30,12 @@ class QuizReview extends StatelessWidget {
 }
 
 class QuestionReviewCard extends StatelessWidget {
+  final int questionNumber;
   final Map<String, dynamic> question;
   final dynamic userAnswer;
 
   QuestionReviewCard({
+    required this.questionNumber,
     required this.question,
     required this.userAnswer,
   });
@@ -49,7 +53,7 @@ class QuestionReviewCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              question['question'],
+              'Question $questionNumber: ${question['question']}',
               style: TextStyle(fontSize: 18),
             ),
 
