@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:trivia_quiz_app/screens/home_page.dart';
+
 String dispName = "";
 bool showText = false;
 
@@ -80,7 +81,10 @@ class _MyHomePageState extends State<MyHomePage> {
             width: 200,
             child: ElevatedButton(
               onPressed: namePresent ? null:  () async {
-                dispName = _playerName.text; 
+                //final username = _playerName.text;
+                dispName = _playerName.text;
+                
+
                 Navigator.push(
                     context, 
                     MaterialPageRoute(builder: (context) => const HomePage()),
@@ -97,6 +101,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-
-

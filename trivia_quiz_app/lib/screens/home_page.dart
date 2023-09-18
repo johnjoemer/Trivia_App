@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
             (match) => 'category=$num',
           );
     });
-    print(baseUrl);
+    // print(baseUrl);
   }
 
   @override
