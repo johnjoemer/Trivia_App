@@ -187,7 +187,6 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
                               );
                             },
                           );
-                        // ],
                     }
                     
                     else {
@@ -238,18 +237,12 @@ void startGame() {
     } else {
       setState(() {
         isGameOver = true;
-
-        // highScoresList.add({
-        //   'username': dispName,
-        //   'score': currentHighScore,
-        // });
       });
     }
   }
 }
 
 class QuestionCard extends StatelessWidget {
-  // final List<dynamic> shuffledQuestions;
   final int questionNumber;
   final Map<String, dynamic> question;
   final List<dynamic> allAnswers;
@@ -257,7 +250,6 @@ class QuestionCard extends StatelessWidget {
   
 
   const QuestionCard({super.key,
-    // required this.shuffledQuestions, 
     required this.questionNumber,
     required this.question,
     required this.allAnswers,
@@ -320,3 +312,5 @@ class QuestionCard extends StatelessWidget {
     
   }
 }
+
+// this is a comment
