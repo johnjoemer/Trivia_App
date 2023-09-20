@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:trivia_quiz_app/main.dart';
-import 'package:trivia_quiz_app/resources/username_model.dart';
-// import 'package:trivia_quiz_app/resources/username_model.dart';
 import 'package:trivia_quiz_app/screens/checkanswers_page.dart';
 import 'package:trivia_quiz_app/screens/home_page.dart';
 import 'dart:convert';
 import 'package:trivia_quiz_app/screens/quiz_summary.dart';
-import 'package:trivia_quiz_app/services/database_helper.dart';
-// import 'package:trivia_quiz_app/services/database_helper.dart';
+
 
 // String baseUrl = "https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple";
 String baseUrl = "https://api.api-ninjas.com/v1/trivia?category=";
 int questionCounter = 1;
 int currentScore = 0;
 int currentHighScore = 0;
-List<Map<String, dynamic>> highScoresList = [];
+// List<Map<String, dynamic>> highScoresList = [];
 
 class TriviaQuizPage extends StatefulWidget {
   @override
@@ -107,16 +104,16 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
                   QuizSummary(correctAnswers: correctAnswers),
                   ElevatedButton(
                     onPressed: () async {
-                      final score = currentHighScore;
-                      final username = dispName;
+                      // final score = currentHighScore;
+                      // final username = dispName;
 
-                      final userName model = userName(username: username, score: score);
-                      if (username.isNotEmpty){
-                        await DatabaseHelper.addUser(model);
-                      }
-                      else{
-                        await DatabaseHelper.updateUser(model);
-                      }
+                      // final userName model = userName(username: username, score: score);
+                      // if (username.isNotEmpty){
+                      //   await DatabaseHelper.addUser(model);
+                      // }
+                      // else{
+                      //   await DatabaseHelper.updateUser(model);
+                      // }
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) =>
@@ -167,32 +164,30 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
                     
                     else if (snapshot.hasData) {
                       questions = snapshot.data!;
-                      return SizedBox(
-                        height: 90,
-                        child: PageView.builder(
-                          controller: _pageController,
-                          itemCount: questions.length,
-                          itemBuilder: (context, index) {
-                            final questionNumber = index + 1;
-                            final question = questions[index]; //retrieves questions at the current index
-                            final List<dynamic> allAnswers = [...question['incorrectAnswers'], question['correctAnswer']]; //store all answers / choices in a list
-                            allAnswers.shuffle(); //shuffle the answers / choices
-                            
-                            //then it will pass question, allAnswers, and handleAnswer to QuestionCard
-                            return QuestionCard(
-                              // shuffledQuestions : shuffledQuestions,
-                              questionNumber: questionNumber,
-                              question: question,
-                              allAnswers: allAnswers,
-                              onAnswerSelected: (selectedAnswer) {
-                                handleAnswer(
-                                    selectedAnswer == question['correctAnswer'],
-                                    selectedAnswer);
-                              },
-                            );
-                          },
-                        ),
-                      );
+                      return PageView.builder(
+                            controller: _pageController,
+                            itemCount: questions.length,
+                            itemBuilder: (context, index) {
+                              final questionNumber = index + 1;
+                              final question = questions[index]; //retrieves questions at the current index
+                              final List<dynamic> allAnswers = [...question['incorrectAnswers'], question['correctAnswer']]; //store all answers / choices in a list
+                              allAnswers.shuffle(); //shuffle the answers / choices
+                              
+                              //then it will pass question, allAnswers, and handleAnswer to QuestionCard
+                              return QuestionCard(
+                                // shuffledQuestions : shuffledQuestions,
+                                questionNumber: questionNumber,
+                                question: question,
+                                allAnswers: allAnswers,
+                                onAnswerSelected: (selectedAnswer) {
+                                  handleAnswer(
+                                      selectedAnswer == question['correctAnswer'],
+                                      selectedAnswer);
+                                },
+                              );
+                            },
+                          );
+                        // ],
                     }
                     
                     else {
@@ -210,8 +205,8 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
 
 void startGame() {
   setState(() {
-    currentScore = 0;
-    currentHighScore = 0;
+    // currentScore = 0;
+    // currentHighScore = 0;
     correctAnswers = 0;
     isGameStarted = true;
     isGameOver = false;
@@ -231,7 +226,7 @@ void startGame() {
     if (isCorrect) {
       setState(() {
         correctAnswers++;
-        currentHighScore = correctAnswers;
+        // currentHighScore = correctAnswers;
       });
     }
 
@@ -244,10 +239,10 @@ void startGame() {
       setState(() {
         isGameOver = true;
 
-        highScoresList.add({
-          'username': dispName,
-          'score': currentHighScore,
-        });
+        // highScoresList.add({
+        //   'username': dispName,
+        //   'score': currentHighScore,
+        // });
       });
     }
   }
@@ -272,7 +267,7 @@ class QuestionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         //print the questions
         Text(
