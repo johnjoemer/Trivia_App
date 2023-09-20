@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:trivia_quiz_app/screens/home_page.dart';
 
