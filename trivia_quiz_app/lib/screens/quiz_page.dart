@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:trivia_quiz_app/main.dart';
 import 'package:trivia_quiz_app/screens/checkanswers_page.dart';
-import 'package:trivia_quiz_app/screens/home_page.dart';
+// import 'package:trivia_quiz_app/screens/home_page.dart';
 import 'dart:convert';
 import 'package:trivia_quiz_app/screens/quiz_summary.dart';
+import 'package:trivia_quiz_app/services/database_helper.dart';
 
 
 // String baseUrl = "https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple";
@@ -64,10 +65,33 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
     }
   }
 
+  void _handleHomeButtonPressed() async {
+    final highestScoreData = await DatabaseHelper().getHighestScore();
+
+    if(highestScoreData != null){
+      final playerName = highestScoreData['playerName'];
+      final highestScore = highestScoreData['highestScore'] as int;
+
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+        context, 
+        MaterialPageRoute(
+          builder: (context) => MyHomePageWithScore(
+            playerName: playerName,
+            highestScore: highestScore,
+          ),
+        ),
+      );
+    }
+    else {
+      // Handle the case where no data is found 
+      throw('no data found');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    // rquestionsFuture = fetchQuestions(); // Start fetching questions
     userAnswers = [];
   }
 
@@ -104,16 +128,6 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
                   QuizSummary(correctAnswers: correctAnswers),
                   ElevatedButton(
                     onPressed: () async {
-                      // final score = currentHighScore;
-                      // final username = dispName;
-
-                      // final userName model = userName(username: username, score: score);
-                      // if (username.isNotEmpty){
-                      //   await DatabaseHelper.addUser(model);
-                      // }
-                      // else{
-                      //   await DatabaseHelper.updateUser(model);
-                      // }
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) =>
@@ -132,13 +146,9 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 250, 158, 52),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       showText = true;
-                      highScore = correctAnswers;
-                      Navigator.push(
-                        context, 
-                        MaterialPageRoute(builder: (context) => MyHomePage()),
-                      );
+                      _handleHomeButtonPressed();
                     },
                     child: const Text(
                       'Home',
@@ -184,6 +194,7 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
                                       selectedAnswer == question['correctAnswer'],
                                       selectedAnswer);
                                 },
+                                onHomeButtonPressed: _handleHomeButtonPressed,
                               );
                             },
                           );
@@ -204,8 +215,6 @@ class _TriviaQuizPageState extends State<TriviaQuizPage> {
 
 void startGame() {
   setState(() {
-    // currentScore = 0;
-    // currentHighScore = 0;
     correctAnswers = 0;
     isGameStarted = true;
     isGameOver = false;
@@ -219,13 +228,12 @@ void startGame() {
   }
 }
 
-  void handleAnswer(bool isCorrect, dynamic selectedAnswer) {
+  void handleAnswer(bool isCorrect, dynamic selectedAnswer) async {
     userAnswers.add(selectedAnswer);
 
     if (isCorrect) {
       setState(() {
         correctAnswers++;
-        // currentHighScore = correctAnswers;
       });
     }
 
@@ -238,6 +246,9 @@ void startGame() {
       setState(() {
         isGameOver = true;
       });
+
+      // Insert or update the player's score in the database
+      await DatabaseHelper().insertOrUpdateScore(dispName, correctAnswers);
     }
   }
 }
@@ -247,6 +258,7 @@ class QuestionCard extends StatelessWidget {
   final Map<String, dynamic> question;
   final List<dynamic> allAnswers;
   final Function(dynamic) onAnswerSelected; // callback function that will be called when the user selects an answer
+  final Function() onHomeButtonPressed;
   
 
   const QuestionCard({super.key,
@@ -254,6 +266,7 @@ class QuestionCard extends StatelessWidget {
     required this.question,
     required this.allAnswers,
     required this.onAnswerSelected,
+    required this.onHomeButtonPressed,
   });
 
   @override
@@ -288,17 +301,9 @@ class QuestionCard extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: Color.fromARGB(255, 250, 158, 52),
           ),
-          onPressed: () {
+          onPressed: () async {
             showText = true;
-            currentScore = currentHighScore;
-            
-            // highScore = correctAnswers;
-            Navigator.push(
-              context, 
-              MaterialPageRoute(builder: (context) => const MyHomePage(
-              ),
-              ),
-            );
+            onHomeButtonPressed();
           },
           child: const Text(
             'Home',
