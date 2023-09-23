@@ -9,9 +9,7 @@ class QuizReview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Quiz Review'),
-      ),
+      appBar: AppBar(),
       body: ListView.builder(
         itemCount: reviewList.length,
         itemBuilder: (context, index) {
@@ -52,12 +50,29 @@ class QuestionReviewCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Question $questionNumber: ${question['question']}',
-              style: const TextStyle(fontSize: 18),
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'Question $questionNumber: ',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  TextSpan(
+                    text: question['question'],
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ],
+              ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 26),
 
             Text(
               '$userAnswer',
