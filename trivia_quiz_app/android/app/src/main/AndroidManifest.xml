@@ -2,7 +2,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     
     <application
-        android:label="trivia_quiz_app"
+        android:label="Quizzy Quest"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true"
